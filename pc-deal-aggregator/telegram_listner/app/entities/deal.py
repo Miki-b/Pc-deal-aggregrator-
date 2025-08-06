@@ -24,3 +24,4 @@ class Deal:
     image_path: Optional[str] = None
     raw_message: str = ""
     timestamp: datetime = None
+    categories: Optional[List[str]] = None

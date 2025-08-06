@@ -2,6 +2,8 @@ import re
 from datetime import datetime
 from app.parsers.base_parser import BaseParser
 from app.agents.ai_agent import AIAgentParser
+from app.services.catagorizer import categorize_deal
+from app.services.scorer import score_deal
 
 class RegexParser(BaseParser):
     def parse(self, message_text: str) -> dict:
@@ -35,4 +37,8 @@ class RegexParser(BaseParser):
         normalized["timestamp"] = datetime.utcnow()
         normalized["urls"] = normalized.get("urls") or ([normalized["url"]] if normalized.get("url") else [])
         normalized["contact_numbers"] = normalized.get("contact_numbers") or []
+        normalized["categories"] = categorize_deal(normalized)
+        general_score, category_scores = score_deal(normalized)
+        normalized["general_score"] = general_score
+        normalized["category_scores"] = category_scores
         return normalized

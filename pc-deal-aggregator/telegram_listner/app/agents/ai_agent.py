@@ -87,6 +87,16 @@ If any field is not found, its value should be null. Prioritize detailed informa
         if "phone_numbers" in structured:
             structured["contact_numbers"] = structured.pop("phone_numbers")
 
+        if structured["price"] is None:
+            price_match = re.search(r'([\d,]+)\s*(birr|usd|ETB|ETB|Birr)?', raw, re.IGNORECASE)
+            if price_match:
+                price_val = price_match.group(1).replace(",", "")
+                try:
+                    structured["price"] = int(price_val)
+                except:
+                    structured["price"] = None
+                structured["currency"] = price_match.group(2) or "Birr"
+                
         return structured
 
     def _fallback(self, raw: str, reason: str = "unknown") -> dict:

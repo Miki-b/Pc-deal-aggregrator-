@@ -1,0 +1,11 @@
+# Ignore all .env files anywhere
+**/.env
+
+# Ignore all node_modules folders
+**/node_modules/
+
+# Ignore Python cache folders
+**/__pycache__/
+
+# Ignore .session files
+*.session
