@@ -1,0 +1,72 @@
+// Prisma schema for PC Deal Aggregator
+
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+model Deal {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Information
+  title           String?
+  model           String?
+  rawMessage      String   @map("raw_message")
+  imagePath       String?  @map("image_path")
+  
+  // Processor Information
+  processor  String?
+  generation String?
+  
+  // Memory & Storage
+  ram     String?
+  storage String?
+  
+  // Display
+  screenSize String? @map("screen_size")
+  resolution String?
+  
+  // Graphics
+  graphicsCard   String? @map("graphics_card")
+  graphicsMemory String? @map("graphics_memory")
+  
+  // Other Specs
+  batteryLife String? @map("battery_life")
+  condition   String?
+  
+  // Pricing
+  price    Int?
+  currency String? @default("Birr")
+  
+  // Contact & Links
+  contactNumbers String[] @map("contact_numbers")
+  urls           String[]
+  
+  // Categorization & Scoring
+  categories     String[]
+  generalScore   Int      @default(0) @map("general_score")
+  categoryScores Json     @default("{}") @map("category_scores")
+  
+  // Metadata
+  channelId   String?   @map("channel_id")
+  messageId   String?   @map("message_id")
+  postedAt    DateTime? @map("posted_at")
+  telegramUrl String?   @map("telegram_url")
+
+  @@unique([channelId, messageId])
+  @@index([price])
+  @@index([postedAt])
+  @@index([createdAt])
+  @@index([generalScore])
+  @@index([categories])
+  @@map("deals")
+}
